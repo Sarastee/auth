@@ -1,10 +1,10 @@
-FROM golang:1.21.7-alpine as builder
+FROM golang:1.21.7-alpine AS builder
 
-COPY . /github/sarastee/auth/source/
-WORKDIR /github/sarastee/auth/source/
+COPY . /github.com/sarastee/auth/source/
+WORKDIR /github.com/sarastee/auth/source/
 
 RUN go mod download
-RUN go build -o ./bin/curd_server cmd/grpc_server/main.go
+RUN go build -o ./bin/crud_server cmd/grpc_server/main.go
 
 FROM alpine:latest
 
