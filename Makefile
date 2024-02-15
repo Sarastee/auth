@@ -32,3 +32,8 @@ build:
 
 copy-to-server:
 	scp service_linux root@91.236.199.123:
+
+docker-build-and-push:
+	docker buildx build --no-cache --platform linux/amd64 -t cr.selcloud.ru/sarastee/test-server:v0.0.1 .
+	docker login -u token -p CRgAAAAAUz7uMVQvP3TNe-dt7MeaD6SUY9I4OoPS cr.selcloud.ru/sarastee
+	docker push cr.selcloud.ru/sarastee/test-server:v0.0.1
