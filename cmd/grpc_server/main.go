@@ -1,101 +1,56 @@
 package main
 
 import (
-	"context"
-	"fmt"
+	"flag"
 	"log"
 	"net"
 
+	"github.com/sarastee/auth/internal/config"
+	envcfg "github.com/sarastee/auth/internal/config/env"
+	desc "github.com/sarastee/auth/pkg/user_api_v1"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
-	"google.golang.org/protobuf/types/known/emptypb"
-	"google.golang.org/protobuf/types/known/timestamppb"
-
-	"github.com/brianvoe/gofakeit/v6"
-	desc "github.com/sarastee/auth/pkg/user_api_v1"
 )
 
-const grpcPort = 50051
+var configPath string
+
+func init() {
+	flag.StringVar(&configPath, "config-path", "./config/.env", "path to config file")
+}
 
 type server struct {
 	desc.UnimplementedUserAPIV1Server
 }
 
-var testUser *desc.User
-
-// Create User
-func (s *server) Create(_ context.Context, _ *desc.CreateRequest) (*desc.CreateResponse, error) {
-
-	testUser = &desc.User{
-		Id: 0,
-		Info: &desc.UserInfo{
-			Name:  gofakeit.Name(),
-			Email: gofakeit.Email(),
-			Role:  desc.Role_user,
-		},
-		CreatedAt: timestamppb.Now(),
-		UpdatedAt: timestamppb.Now(),
-	}
-
-	log.Printf("User has been created: %v", testUser)
-
-	return &desc.CreateResponse{
-		Id: testUser.Id,
-	}, nil
-
-	// Create Request error
-}
-
-// Get User info
-func (s *server) Get(_ context.Context, req *desc.GetRequest) (*desc.GetResponse, error) {
-
-	if req.Id != testUser.Id {
-		log.Printf("User with id: %v not found", req.Id)
-		return nil, fmt.Errorf("user not found")
-	}
-	log.Printf("User id: %d was found", req.GetId())
-
-	return &desc.GetResponse{
-		User: testUser,
-	}, nil
-
-	// Get Request error
-}
-
-// Update User
-func (s *server) Update(_ context.Context, req *desc.UpdateRequest) (*emptypb.Empty, error) {
-
-	testUser.Info = &desc.UserInfo{
-		Name:  req.Update.Name.Value,
-		Email: req.Update.Email.Value,
-		Role:  req.Update.Role,
-	}
-
-	testUser.UpdatedAt = timestamppb.Now()
-
-	log.Printf("User with ID: %d has been updated", req.Id)
-	return &emptypb.Empty{}, nil
-}
-
-// Delete User
-func (s *server) Delete(_ context.Context, req *desc.DeleteRequest) (*emptypb.Empty, error) {
-	if req.Id != testUser.Id {
-		log.Printf("User with id: %v not found", req.Id)
-		return nil, fmt.Errorf("user not found")
-	}
-	log.Printf("User id: %d was found", req.Id)
-
-	testUser = nil
-	log.Printf("User id: %d has been deleted", req.Id)
-
-	return &emptypb.Empty{}, nil
-}
-
 func main() {
-	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", grpcPort))
+	flag.Parse()
+	//ctx := context.Background()
+
+	err := config.Load(configPath)
+	if err != nil {
+		log.Fatalf("failed to load config: %v", err)
+	}
+
+	gRPCConfig, err := envcfg.NewGRPCConfig()
+	if err != nil {
+		log.Fatalf("failed to get grpc config: %v", err)
+	}
+
+	//pgConfig, err := envcfg.NewPGConfig()
+	//if err != nil {
+	//	log.Fatalf("failed to get pg config: %v", err)
+	//}
+
+	lis, err := net.Listen("tcp", gRPCConfig.Address())
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
+
+	//pool, err := pgxpool.Connect(ctx, pgConfig.DSN())
+	//if err != nil {
+	//	log.Panicf("failed to connect to database: %v", err)
+	//}
+	//defer pool.Close()
 
 	s := grpc.NewServer()
 	reflection.Register(s)
