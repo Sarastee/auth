@@ -119,7 +119,7 @@ jobs:
             # Remove old container
             docker rm $CONTAINER_NAME
             
-            # Run a Docker Compose
+            # Run a Docker Compose File
             docker-compose up -d
             
             # Run a new container from a new image
