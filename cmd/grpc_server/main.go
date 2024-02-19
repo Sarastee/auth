@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"flag"
-	"fmt"
 	"log"
 	"net"
 	"os"
@@ -23,9 +22,7 @@ import (
 var configPath string
 
 func init() {
-	fmt.Print(os.Getwd())
-	flag.StringVar(&configPath, "config-path", "/config/prod.env", "path to config file")
-
+	flag.StringVar(&configPath, "config-path", "prod.env", "path to config file")
 }
 
 type server struct {
@@ -50,6 +47,7 @@ func main() {
 
 	err := config.Load(configPath)
 	if err != nil {
+		log.Printf(os.Getwd())
 		log.Fatalf("failed to load config: %v", err)
 	}
 
