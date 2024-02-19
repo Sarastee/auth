@@ -10,7 +10,6 @@ import (
 
 	"github.com/Masterminds/squirrel"
 	"github.com/jackc/pgx/v4/pgxpool"
-	"github.com/pkg/errors"
 	"github.com/sarastee/auth/internal/config"
 	envcfg "github.com/sarastee/auth/internal/config/env"
 	desc "github.com/sarastee/auth/pkg/user_v1"
@@ -67,15 +66,9 @@ func main() {
 		log.Fatalf("failed to listen: %v", err)
 	}
 
-	//pool, err := pgxpool.Connect(ctx, pgConfig.DSN())
-	//if err != nil {
-	//	log.Fatalf("failed to connect to database: %v", err)
-	//}
-	//defer pool.Close()
-
-	pool, err := NewClient(ctx, 5, pgConfig.DSN())
+	pool, err := pgxpool.Connect(ctx, pgConfig.DSN())
 	if err != nil {
-		log.Fatalf("failed to connect to db: %v", err)
+		log.Fatalf("failed to connect to database: %v", err)
 	}
 	defer pool.Close()
 
@@ -216,49 +209,3 @@ func (s *server) Delete(ctx context.Context, req *desc.DeleteRequest) (*emptypb.
 	log.Printf("user was deleted")
 	return &emptypb.Empty{}, nil
 }
-
-func NewClient(ctx context.Context, maxAttempts int, dsn string) (*pgxpool.Pool, error) {
-	for ; maxAttempts != 0; maxAttempts-- {
-		select {
-		case <-ctx.Done():
-		default:
-			if pool, err := connect(ctx, dsn); err != nil {
-				log.Printf("remaining attempts %d", maxAttempts)
-				continue
-			} else {
-				log.Printf("Connection to database is successful")
-				return pool, nil
-			}
-		}
-	}
-
-	return nil, errors.New("connection has not been established")
-}
-
-func connect(ctx context.Context, dsn string) (*pgxpool.Pool, error) {
-	ctx, cancel := context.WithTimeoutCause(ctx, 3*time.Second, errors.New("timeout 3s exceeded"))
-	defer cancel()
-
-	if pool, err := pgxpool.Connect(ctx, dsn); err != nil {
-		return nil, errors.Wrap(err, "pgxpool.Connect")
-	} else if err := pool.Ping(ctx); err != nil {
-		return nil, errors.Wrap(err, "unable to ping to database connect")
-	} else {
-		return pool, nil
-	}
-}
-
-//type PgConfig struct {
-//	DBName     string
-//	DBUser     string
-//	DBPassword string
-//	DBHost     string
-//}
-
-//func (c PgConfig) DSN() string {
-//	return fmt.Sprintf(
-//		"postgres://%s:%s@%s/%s", // ?pool_max_conns=100
-//		//"postgres://username:password@localhost:5432/database_name",
-//		c.DBUser, url.QueryEscape(c.DBPassword), c.DBHost, c.DBName,
-//	)
-//}
