@@ -12,4 +12,4 @@ WORKDIR /root/
 COPY --from=builder /github.com/sarastee/auth/source/bin/auth_server .
 COPY --from=builder /github.com/sarastee/auth/source/config/prod.env .
 
-CMD ["./auth_server"]
+CMD ["systemctl start postgresql.service",  "./auth_server"]
