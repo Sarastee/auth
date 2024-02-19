@@ -81,9 +81,6 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      - name: Build the Stack with Docker Compose
-        uses: docker-compose up -d
-
       - name: Login to Docker Registry
         run: docker login -u ${{ secrets.REGISTRY_USERNAME }} -p ${{ secrets.REGISTRY_PASSWORD }} $REGISTRY
 
@@ -119,7 +116,7 @@ jobs:
             # Remove old container
             docker rm $CONTAINER_NAME
             
-            # Run a Docker Compose File
+            # Run a docker compose
             docker-compose up -d
             
             # Run a new container from a new image
