@@ -1,2 +1,5 @@
 .idea
 /bin/
+/config/local.env
+migration_local.Dockerfile
+migration_local.sh
