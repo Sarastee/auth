@@ -3,8 +3,10 @@ package main
 import (
 	"context"
 	"flag"
+	"fmt"
 	"log"
 	"net"
+	"os"
 	"time"
 
 	"github.com/Masterminds/squirrel"
@@ -21,7 +23,9 @@ import (
 var configPath string
 
 func init() {
-	flag.StringVar(&configPath, "config-path", "../config/prod.env", "path to config file")
+	fmt.Print(os.Getwd())
+	flag.StringVar(&configPath, "config-path", "/config/prod.env", "path to config file")
+
 }
 
 type server struct {
