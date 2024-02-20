@@ -18,7 +18,7 @@ services:
       context: ./auth
       dockerfile: migration.Dockerfile
     env_file:
-      - "./auth/migration.env"
+      - ./auth/migration.env
     depends_on:
       - db
     restart: on-failure
@@ -26,8 +26,8 @@ services:
   auth-server:
     image: cr.selcloud.ru/sarastee/auth-server:${TAG_NAME}
     env_file:
-      - "./auth/.env"
+      - ./auth/.env
     ports:
-      - "50051:50051"
+      - "${GRPC_PORT}:${GRPC_PORT}"
     depends_on:
       - db
