@@ -18,7 +18,7 @@ services:
       context: ./auth
       dockerfile: migration.Dockerfile
     env_file:
-      - "./migration.env"
+      - "./auth/migration.env"
     depends_on:
       - db
     restart: on-failure
