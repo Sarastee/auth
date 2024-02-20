@@ -12,6 +12,7 @@ require (
 )
 
 require (
+	github.com/caarlos0/env/v10 v10.0.0 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/jackc/chunkreader/v2 v2.0.1 // indirect
 	github.com/jackc/pgconn v1.14.0 // indirect

@@ -1,36 +1,33 @@
 version: '3'
 
 volumes:
-  postgres_volume_prod:
+  postgres_volume:
 
 services:
-  pg-prod:
+  db:
     image: postgres:14-alpine3.17
-    container_name: auth-postgres
     env_file:
-      - ./config/prod.env
+      - .env
     ports:
-      - "54322:5432"
+      - "54321:5432"
     volumes:
-      - postgres_volume_prod:/var/lib/postgresql/data
+      - postgres_volume:/var/lib/postgresql/data
 
-  migrator-prod:
+  auth-migratior:
     build:
-      context: .
-      dockerfile: migration_prod.Dockerfile
+      context: ./auth
+      dockerfile: migration.Dockerfile
+    env_file:
+      - "./migration.env"
+    depends_on:
+      - db
     restart: on-failure
-    environment:
-      DB_HOST: pg-prod
-    links:
-      - pg-prod
 
   auth-server:
+    image: cr.selcloud.ru/sarastee/auth-server:${TAG_NAME}
     env_file:
-      - ./config/prod.env
-    build:
-      context: .
-      dockerfile: auth_server.Dockerfile
+      - "./.env"
     ports:
-      - "8080:50052"
-    links:
-      - pg-prod
+      - ${GRPC_PORT}:${GRPC_PORT}
+    depends_on:
+      - db

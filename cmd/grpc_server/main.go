@@ -5,13 +5,11 @@ import (
 	"flag"
 	"log"
 	"net"
-	"os"
 	"time"
 
 	"github.com/Masterminds/squirrel"
 	"github.com/jackc/pgx/v4/pgxpool"
-	"github.com/sarastee/auth/internal/config"
-	envcfg "github.com/sarastee/auth/internal/config/env"
+	"github.com/sarastee/auth/internal/config/env"
 	desc "github.com/sarastee/auth/pkg/user_v1"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -42,31 +40,18 @@ type User struct {
 }
 
 func main() {
-	flag.Parse()
 	ctx := context.Background()
-
-	err := config.Load(configPath)
+	cfg, err := env.New()
 	if err != nil {
-		log.Printf(os.Getwd())
-		log.Fatalf("failed to load config: %v", err)
+		log.Fatalf("cannot get config: %v", err)
 	}
 
-	grpcConfig, err := envcfg.NewGRPCConfig()
-	if err != nil {
-		log.Fatalf("failed to get grpc config: %v", err)
-	}
-
-	pgConfig, err := envcfg.NewPGConfig()
-	if err != nil {
-		log.Fatalf("failed to get pg config: %v", err)
-	}
-
-	lis, err := net.Listen("tcp", grpcConfig.Address())
+	lis, err := net.Listen(cfg.GRPC.Protocol, cfg.GRPC.Address)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
 
-	pool, err := pgxpool.Connect(ctx, pgConfig.DSN())
+	pool, err := pgxpool.Connect(ctx, cfg.Postgres.DSN)
 	if err != nil {
 		log.Fatalf("failed to connect to database: %v", err)
 	}
