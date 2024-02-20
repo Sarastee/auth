@@ -15,7 +15,6 @@ env:
 jobs:
   copy-migrations:
     runs-on: ubuntu-latest
-    needs: build-and-test
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
