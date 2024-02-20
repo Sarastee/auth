@@ -20,3 +20,13 @@ services:
     restart: on-failure
     environment:
       DB_HOST: pg-prod
+
+  auth-server:
+    env_file:
+      - ./config/prod.env
+    build:
+      context: .
+      dockerfile: auth_server.Dockerfile
+    restart: on-failure
+    ports:
+      - "8080:50052"
