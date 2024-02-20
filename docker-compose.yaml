@@ -27,6 +27,5 @@ services:
     build:
       context: .
       dockerfile: auth_server.Dockerfile
-    restart: on-failure
     ports:
       - "8080:50052"
