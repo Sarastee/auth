@@ -7,7 +7,7 @@ services:
   db:
     image: postgres:14-alpine3.17
     env_file:
-      - .env
+      - ./auth/.env
     ports:
       - "54321:5432"
     volumes:
@@ -26,8 +26,8 @@ services:
   auth-server:
     image: cr.selcloud.ru/sarastee/auth-server:${TAG_NAME}
     env_file:
-      - "./.env"
+      - "./auth/.env"
     ports:
-      - ${GRPC_PORT}:${GRPC_PORT}
+      - "50051:50051"
     depends_on:
       - db
