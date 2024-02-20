@@ -46,3 +46,4 @@ docker-build-and-push:
 	docker login -u token -p CRgAAAAAUz7uMVQvP3TNe-dt7MeaD6SUY9I4OoPS cr.selcloud.ru/sarastee
 	docker push cr.selcloud.ru/sarastee/test-server:v0.0.1
 
+docker:
