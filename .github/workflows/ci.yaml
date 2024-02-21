@@ -108,5 +108,14 @@ jobs:
             # Current folder test
             ls -a
             
+            # Auth folder test
+            cd auth
+            
+            # Auth folder files test
+            ls -a
+            
+            # Back to root folder
+            cd ..
+            
             # Run a new container from a new image
             docker-compose --env-file ./auth/.env.auth up -d --force-recreate --build auth-server
