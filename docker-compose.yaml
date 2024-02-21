@@ -12,16 +12,11 @@ services:
       - "54321:5432"
     volumes:
       - postgres_volume:/var/lib/postgresql/data
-
-  auth-migrator:
-    build:
-      context: ./auth
-      dockerfile: migration.Dockerfile
-    env_file:
-      - ./auth/migration.env
-    depends_on:
-      - db
-    restart: on-failure
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   auth-server:
     image: cr.selcloud.ru/sarastee/auth-server:${TAG_NAME}
@@ -31,3 +26,12 @@ services:
       - "${GRPC_PORT}:${GRPC_PORT}"
     depends_on:
       - db
+  auth-migrator:
+    build:
+      context: ./auth
+      dockerfile: migration.Dockerfile
+    env_file:
+      - "./auth/migration.env"
+    depends_on:
+      - db
+    restart: on-failure
