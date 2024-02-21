@@ -102,8 +102,11 @@ jobs:
             # Pull new registry container
             docker pull $REGISTRY/$IMAGE_NAME:$TAG_NAME
             
-            # Run a new container from a new image
-            docker-compose --env-file ./auth/.env.auth up -d --force-recreate --build auth-server
-            
             # Run migrations
             docker-compose --env-file ./auth/migration.env up -d --force-recreate --build auth-migrator
+            
+            # Current folder test
+            ls -a
+            
+            # Run a new container from a new image
+            docker-compose --env-file ./auth/.env.auth up -d --force-recreate --build auth-server
