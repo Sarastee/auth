@@ -13,7 +13,7 @@ services:
     volumes:
       - postgres_volume:/var/lib/postgresql/data
 
-  auth-migratior:
+  auth-migrator:
     build:
       context: ./auth
       dockerfile: migration.Dockerfile

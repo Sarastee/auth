@@ -106,4 +106,4 @@ jobs:
             docker-compose --env-file ./auth/.env up -d --force-recreate --build auth-server
             
             # Run migrations
-            docker-compose --env-file ./auth/.env up -d --force-recreate --build auth-migrator
+            docker-compose --env-file ./auth/migration.env up -d --force-recreate --build auth-migrator
