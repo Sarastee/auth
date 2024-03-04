@@ -13,7 +13,8 @@ import (
 	repoModel "github.com/sarastee/auth/internal/repository/user/model"
 )
 
-func (r *Repo) Get(ctx context.Context, UserID serviceModel.UserID) (*serviceModel.User, error) {
+// Get ...
+func (r *Repo) Get(ctx context.Context, UserID int64) (*serviceModel.User, error) {
 	builderSelect := r.sq.Select(idDB, emailDB, nameDB, roleDB, createdAtDB, updatedAtDB).
 		From(tableDB).
 		PlaceholderFormat(squirrel.Dollar).

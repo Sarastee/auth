@@ -10,6 +10,7 @@ import (
 	"github.com/sarastee/auth/internal/repository/user/converter"
 )
 
+// Update ...
 func (r *Repo) Update(ctx context.Context, user *serviceModel.UserUpdate) error {
 	repoUser := converter.ToRepoUserUpdateFromServiceUserUpdate(user)
 

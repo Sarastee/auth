@@ -11,7 +11,7 @@ RUN apt-get update \
     && apt-get install -y netcat-traditional \
     && apt-get install -y acl
 
-ADD https://github.com/pressly/goose/releases/download/v3.18.0/goose_linux_x86_64 /bin/goose
+ADD https://github.com/pressly/goose/releases/download/v3.14.0/goose_linux_x86_64 /bin/goose
 
 COPY /db/migrations/*.sql db/migrations/
 COPY deploy/scripts/migrator-start.sh .

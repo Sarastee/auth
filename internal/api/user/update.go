@@ -10,6 +10,7 @@ import (
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
+// Update user by params
 func (i *Implementation) Update(ctx context.Context, request *user_v1.UpdateRequest) (*emptypb.Empty, error) {
 	err := i.userService.Update(ctx, converter.ToServiceUserUpdateFromUpdateRequest(request))
 	if err != nil {

@@ -15,16 +15,19 @@ import (
 type key string
 
 const (
-	TxKey key = "tx"
+	TxKey key = "tx" // TxKey ...
 )
 
 type pg struct {
 	pool *pgxpool.Pool
 }
 
+// NewDB ...
 func NewDB(dbc *pgxpool.Pool) db.DB {
 	return &pg{pool: dbc}
 }
+
+// ExecContext ...
 func (p *pg) ExecContext(ctx context.Context, q db.Query, args ...interface{}) (pgconn.CommandTag, error) {
 	logQuery(ctx, q, args...)
 

@@ -12,6 +12,7 @@ type pgClient struct {
 	masterDBC db.DB
 }
 
+// New ...
 func New(ctx context.Context, dsn string) (db.Client, error) {
 	pgxConfig, err := pgxpool.ParseConfig(dsn)
 	if err != nil {

@@ -2,41 +2,37 @@ package model
 
 import "time"
 
-type UserID int64
-
-type UserName string
-
-type UserEmail string
-
+// UserRole ...
 type UserRole string
 
-type Password string
-
 const (
-	UNKNOWN UserRole = "UNKNOWN"
-	ADMIN   UserRole = "ADMIN"
-	USER    UserRole = "USER"
+	UNKNOWN UserRole = "UNKNOWN" // UNKNOWN ...
+	ADMIN   UserRole = "ADMIN"   // ADMIN ...
+	USER    UserRole = "USER"    // USER ...
 )
 
+// User ...
 type User struct {
-	ID        UserID
-	Name      UserName
-	Email     UserEmail
+	ID        int64
+	Name      string
+	Email     string
 	Role      UserRole
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
 
+// UserCreate ...
 type UserCreate struct {
-	Name     UserName
-	Email    UserEmail
-	Password Password
+	Name     string
+	Email    string
+	Password string
 	Role     UserRole
 }
 
+// UserUpdate ...
 type UserUpdate struct {
-	ID    UserID
-	Name  *UserName
-	Email *UserEmail
+	ID    int64
+	Name  *string
+	Email *string
 	Role  *UserRole
 }

@@ -8,6 +8,6 @@ const (
 )
 
 var (
-	ErrUserNotFound = errors.New(errMsgUserNotFound)
-	ErrEmailIsTaken = errors.New(errMsgEmailIsTaken)
+	ErrUserNotFound = errors.New(errMsgUserNotFound) // ErrUserNotFound ...
+	ErrEmailIsTaken = errors.New(errMsgEmailIsTaken) // ErrEmailIsTaken ...
 )

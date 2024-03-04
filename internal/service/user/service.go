@@ -7,10 +7,12 @@ import (
 
 var _ service.UserService = (*Service)(nil)
 
+// Service ...
 type Service struct {
 	userRepo repository.UserRepository
 }
 
+// NewService ...
 func NewService(userRepository repository.UserRepository) *Service {
 	return &Service{
 		userRepo: userRepository,

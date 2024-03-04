@@ -5,10 +5,10 @@ import (
 
 	"github.com/Masterminds/squirrel"
 	"github.com/sarastee/auth/internal/client/db"
-	serviceModel "github.com/sarastee/auth/internal/model"
 )
 
-func (r *Repo) Delete(ctx context.Context, userID serviceModel.UserID) error {
+// Delete ...
+func (r *Repo) Delete(ctx context.Context, userID int64) error {
 	builderDelete := r.sq.Delete(tableDB).
 		PlaceholderFormat(squirrel.Dollar).
 		Where(squirrel.Eq{idDB: userID})

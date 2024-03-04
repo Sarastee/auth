@@ -14,7 +14,8 @@ import (
 	"github.com/sarastee/auth/internal/repository"
 )
 
-func (r *Repo) Create(ctx context.Context, in *serviceModel.UserCreate) (serviceModel.UserID, error) {
+// Create ...
+func (r *Repo) Create(ctx context.Context, in *serviceModel.UserCreate) (int64, error) {
 	currentTime := time.Now()
 	builderInsert := r.sq.Insert(tableDB).
 		PlaceholderFormat(squirrel.Dollar).
@@ -38,8 +39,9 @@ func (r *Repo) Create(ctx context.Context, in *serviceModel.UserCreate) (service
 	}
 	defer rows.Close()
 
-	var UserID serviceModel.UserID
-	UserID, err = pgx.CollectOneRow(rows, pgx.RowTo[serviceModel.UserID])
+	var UserID int64
+
+	UserID, err = pgx.CollectOneRow(rows, pgx.RowTo[int64])
 	if err != nil {
 		var pgErr *pgconn.PgError
 		if errors.As(err, &pgErr) && pgErr.ConstraintName == userEmailKeyConstraint {

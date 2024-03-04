@@ -12,12 +12,15 @@ const (
 	grpcPortEnvName = "GRPC_PORT"
 )
 
+// GRPCCfgSearcher ...
 type GRPCCfgSearcher struct{}
 
+// NewGRPCCfgSearcher ...
 func NewGRPCCfgSearcher() *GRPCCfgSearcher {
 	return &GRPCCfgSearcher{}
 }
 
+// Get ...
 func (s *GRPCCfgSearcher) Get() (*config.GRPCConfig, error) {
 	hostGRPC := os.Getenv(grpcHostEnvName)
 	if len(hostGRPC) == 0 {

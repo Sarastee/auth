@@ -13,17 +13,19 @@ const (
 	host     = "PG_HOST"
 	port     = "PG_PORT"
 	user     = "POSTGRES_USER"
-	password = "POSTGRES_PASSWORD"
+	password = "POSTGRES_PASSWORD" // #nosec G101
 	dbName   = "POSTGRES_DB"
 )
 
 // pgCfgSearcher search for PG config.
 type pgCfgSearcher struct{}
 
+// NewPgCfgSearcher ...
 func NewPgCfgSearcher() *pgCfgSearcher {
 	return &pgCfgSearcher{}
 }
 
+// Get ...
 func (s *pgCfgSearcher) Get() (*config.PgConfig, error) {
 	dbHost := os.Getenv(host)
 	if len(dbHost) == 0 {

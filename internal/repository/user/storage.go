@@ -21,11 +21,13 @@ const (
 
 var _ repository.UserRepository = (*Repo)(nil)
 
+// Repo ...
 type Repo struct {
 	db db.Client
 	sq squirrel.StatementBuilderType
 }
 
+// NewRepository ...
 func NewRepository(client db.Client) *Repo {
 	return &Repo{
 		db: client,

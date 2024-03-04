@@ -11,6 +11,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
+// Create user by params
 func (i *Implementation) Create(ctx context.Context, request *user_v1.CreateRequest) (*user_v1.CreateResponse, error) {
 	userCreate := converter.ToServiceUserCreateFromCreateRequest(request)
 	userID, err := i.userService.Create(ctx, userCreate)
@@ -23,5 +24,5 @@ func (i *Implementation) Create(ctx context.Context, request *user_v1.CreateRequ
 		}
 	}
 
-	return &user_v1.CreateResponse{Id: int64(userID)}, nil
+	return &user_v1.CreateResponse{Id: userID}, nil
 }

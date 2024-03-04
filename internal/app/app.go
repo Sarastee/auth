@@ -14,12 +14,14 @@ import (
 	"google.golang.org/grpc/reflection"
 )
 
+// App ...
 type App struct {
 	serviceProvider *serviceProvider
 	grpcServer      *grpc.Server
 	configPath      string
 }
 
+// NewApp ...
 func NewApp(ctx context.Context, configPath string) (*App, error) {
 	a := &App{configPath: configPath}
 
@@ -30,6 +32,7 @@ func NewApp(ctx context.Context, configPath string) (*App, error) {
 	return a, nil
 }
 
+// Run ...
 func (a *App) Run() error {
 	defer func() {
 		closer.CloseAll()
@@ -39,6 +42,7 @@ func (a *App) Run() error {
 	return a.runGRPCServer()
 }
 
+// initDeps ...
 func (a *App) initDeps(ctx context.Context) error {
 	initDepFunctions := []func(context.Context) error{
 		a.initConfig,
@@ -55,6 +59,7 @@ func (a *App) initDeps(ctx context.Context) error {
 	return nil
 }
 
+// initConfig ...
 func (a *App) initConfig(_ context.Context) error {
 	err := config.Load(a.configPath)
 	if err != nil {
@@ -64,11 +69,13 @@ func (a *App) initConfig(_ context.Context) error {
 	return nil
 }
 
+// initServiceProvider ...
 func (a *App) initServiceProvider(_ context.Context) error {
 	a.serviceProvider = NewServiceProvider()
 	return nil
 }
 
+// initGRPCServer ...
 func (a *App) initGRPCServer(ctx context.Context) error {
 	a.grpcServer = grpc.NewServer(grpc.Creds(insecure.NewCredentials()))
 
@@ -79,6 +86,7 @@ func (a *App) initGRPCServer(ctx context.Context) error {
 	return nil
 }
 
+// runGRPCServer ...
 func (a *App) runGRPCServer() error {
 	log.Printf("GRPC started at %s", a.serviceProvider.GRPCConfig().Address())
 	listener, err := net.Listen("tcp", a.serviceProvider.GRPCConfig().Address())

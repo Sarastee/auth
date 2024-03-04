@@ -20,7 +20,8 @@ type serviceProvider struct {
 	pgConfig   *config.PgConfig
 	grpcConfig *config.GRPCConfig
 
-	dbClient db.Client
+	dbClient  db.Client
+	txManager db.TxManager
 
 	userRepo repository.UserRepository
 
@@ -29,10 +30,12 @@ type serviceProvider struct {
 	userImpl *user.Implementation
 }
 
+// NewServiceProvider ...
 func NewServiceProvider() *serviceProvider {
 	return &serviceProvider{}
 }
 
+// PgConfig ...
 func (s *serviceProvider) PgConfig() *config.PgConfig {
 	if s.pgConfig == nil {
 		cfgSearcher := env.NewPgCfgSearcher()
@@ -47,6 +50,7 @@ func (s *serviceProvider) PgConfig() *config.PgConfig {
 	return s.pgConfig
 }
 
+// GRPCConfig ...
 func (s *serviceProvider) GRPCConfig() *config.GRPCConfig {
 	if s.grpcConfig == nil {
 		cfgSearcher := env.NewGRPCCfgSearcher()
@@ -61,11 +65,12 @@ func (s *serviceProvider) GRPCConfig() *config.GRPCConfig {
 	return s.grpcConfig
 }
 
+// DBClient ...
 func (s *serviceProvider) DBClient(ctx context.Context) db.Client {
 	if s.dbClient == nil {
 		c1, err := pg.New(ctx, s.PgConfig().DSN())
 		if err != nil {
-			log.Fatalf("failed to connect to database: %v", err)
+			log.Fatalf("failed to create DB Client: %v", err)
 		}
 
 		err = c1.DB().Ping(ctx)
@@ -81,6 +86,16 @@ func (s *serviceProvider) DBClient(ctx context.Context) db.Client {
 	return s.dbClient
 }
 
+// TxManager ...
+func (s *serviceProvider) TxManager(ctx context.Context) db.TxManager {
+	if s.txManager == nil {
+		s.txManager = pg.NewTransactionManager(s.DBClient(ctx).DB())
+	}
+
+	return s.txManager
+}
+
+// UserRepository ...
 func (s *serviceProvider) UserRepository(ctx context.Context) repository.UserRepository {
 	if s.userRepo == nil {
 		s.userRepo = userRepository.NewRepository(s.DBClient(ctx))
@@ -89,6 +104,7 @@ func (s *serviceProvider) UserRepository(ctx context.Context) repository.UserRep
 	return s.userRepo
 }
 
+// UserService ...
 func (s *serviceProvider) UserService(ctx context.Context) service.UserService {
 	if s.userService == nil {
 		s.userService = userService.NewService(s.UserRepository(ctx))
@@ -97,6 +113,7 @@ func (s *serviceProvider) UserService(ctx context.Context) service.UserService {
 	return s.userService
 }
 
+// UserImpl ...
 func (s *serviceProvider) UserImpl(ctx context.Context) *user.Implementation {
 	if s.userImpl == nil {
 		s.userImpl = user.NewImplementation(s.UserService(ctx))

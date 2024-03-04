@@ -6,26 +6,7 @@ import (
 	repoModel "github.com/sarastee/auth/internal/repository/user/model"
 )
 
-func ToRepoUserFromServiceUser(user *serviceModel.User) *repoModel.User {
-	return &repoModel.User{
-		ID:        int64(user.ID),
-		Name:      string(user.Name),
-		Email:     string(user.Email),
-		Role:      string(user.Role),
-		CreatedAt: user.CreatedAt,
-		UpdatedAt: user.UpdatedAt,
-	}
-}
-
-func ToRepoUserCreateFromServiceUserCreate(user *serviceModel.UserCreate) *repoModel.UserCreate {
-	return &repoModel.UserCreate{
-		Name:     string(user.Name),
-		Email:    string(user.Email),
-		Password: string(user.Password),
-		Role:     string(user.Role),
-	}
-}
-
+// ToRepoUserUpdateFromServiceUserUpdate ...
 func ToRepoUserUpdateFromServiceUserUpdate(user *serviceModel.UserUpdate) *repoModel.UserUpdate {
 	var (
 		name  *string
@@ -36,13 +17,13 @@ func ToRepoUserUpdateFromServiceUserUpdate(user *serviceModel.UserUpdate) *repoM
 	if user.Name == nil {
 		name = nil
 	} else {
-		name = common.Pointer[string](string(*user.Name))
+		name = common.Pointer[string](*user.Name)
 	}
 
 	if user.Email == nil {
 		email = nil
 	} else {
-		email = common.Pointer[string](string(*user.Email))
+		email = common.Pointer[string](*user.Email)
 	}
 
 	if user.Role == nil {
@@ -52,18 +33,19 @@ func ToRepoUserUpdateFromServiceUserUpdate(user *serviceModel.UserUpdate) *repoM
 	}
 
 	return &repoModel.UserUpdate{
-		ID:    int64(user.ID),
+		ID:    user.ID,
 		Name:  name,
 		Email: email,
 		Role:  role,
 	}
 }
 
+// ToServiceUserFromRepoUser ...
 func ToServiceUserFromRepoUser(user *repoModel.User) *serviceModel.User {
 	return &serviceModel.User{
-		ID:        serviceModel.UserID(user.ID),
-		Name:      serviceModel.UserName(user.Name),
-		Email:     serviceModel.UserEmail(user.Email),
+		ID:        user.ID,
+		Name:      user.Name,
+		Email:     user.Email,
 		Role:      serviceModel.UserRole(user.Role),
 		CreatedAt: user.CreatedAt,
 		UpdatedAt: user.UpdatedAt,
