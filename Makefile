@@ -84,3 +84,6 @@ prod-down-app:
 
 prod-start-app:
 	docker-compose --env-file deploy/env/.env.prod -f docker-compose.prod.yaml up -d --build
+
+app-start:
+	go run ./cmd/grpc_server/main.go --config=./deploy/env/.env.local
