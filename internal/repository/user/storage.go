@@ -2,8 +2,8 @@ package user
 
 import (
 	"github.com/Masterminds/squirrel"
-	"github.com/sarastee/auth/internal/client/db"
 	"github.com/sarastee/auth/internal/repository"
+	"github.com/sarastee/platform_common/pkg/db"
 )
 
 const (

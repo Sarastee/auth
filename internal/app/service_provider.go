@@ -5,15 +5,15 @@ import (
 	"log"
 
 	"github.com/sarastee/auth/internal/api/user"
-	"github.com/sarastee/auth/internal/client/db"
-	"github.com/sarastee/auth/internal/client/db/pg"
-	"github.com/sarastee/auth/internal/closer"
 	"github.com/sarastee/auth/internal/config"
 	"github.com/sarastee/auth/internal/config/env"
 	"github.com/sarastee/auth/internal/repository"
 	userRepository "github.com/sarastee/auth/internal/repository/user"
 	"github.com/sarastee/auth/internal/service"
 	userService "github.com/sarastee/auth/internal/service/user"
+	"github.com/sarastee/platform_common/pkg/closer"
+	"github.com/sarastee/platform_common/pkg/db"
+	"github.com/sarastee/platform_common/pkg/db/pg"
 )
 
 type serviceProvider struct {

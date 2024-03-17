@@ -6,11 +6,11 @@ import (
 
 	"github.com/Masterminds/squirrel"
 	"github.com/jackc/pgx/v5"
-	"github.com/sarastee/auth/internal/client/db"
 	serviceModel "github.com/sarastee/auth/internal/model"
 	"github.com/sarastee/auth/internal/repository"
 	repoConverter "github.com/sarastee/auth/internal/repository/user/converter"
 	repoModel "github.com/sarastee/auth/internal/repository/user/model"
+	"github.com/sarastee/platform_common/pkg/db"
 )
 
 // Get ...
