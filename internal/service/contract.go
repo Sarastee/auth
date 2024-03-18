@@ -6,6 +6,8 @@ import (
 	"github.com/sarastee/auth/internal/model"
 )
 
+//go:generate ../../bin/mockery --output ./mocks  --inpackage-suffix --all
+
 // UserService ...
 type UserService interface {
 	Create(context.Context, *model.UserCreate) (int64, error)

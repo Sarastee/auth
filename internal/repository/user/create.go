@@ -9,9 +9,9 @@ import (
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/pkg/errors"
-	"github.com/sarastee/auth/internal/client/db"
 	serviceModel "github.com/sarastee/auth/internal/model"
 	"github.com/sarastee/auth/internal/repository"
+	"github.com/sarastee/platform_common/pkg/db"
 )
 
 // Create ...
