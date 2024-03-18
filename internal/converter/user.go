@@ -74,6 +74,6 @@ func ToGetResponseFromServiceUser(user *serviceModel.User) *user_v1.GetResponse 
 		Email:     user.Email,
 		Role:      ToRoleFromServiceRole(user.Role),
 		CreatedAt: timestamppb.New(user.CreatedAt),
-		UpdateAt:  timestamppb.New(user.UpdatedAt),
+		UpdatedAt: timestamppb.New(user.UpdatedAt),
 	}
 }
