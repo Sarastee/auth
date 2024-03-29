@@ -20,3 +20,5 @@ bin/
 
 .env
 /coverage.out
+
+vendor.protogen/
