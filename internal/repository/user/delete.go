@@ -2,28 +2,37 @@ package user
 
 import (
 	"context"
+	"fmt"
 
-	"github.com/Masterminds/squirrel"
+	"github.com/jackc/pgx/v5"
 	"github.com/sarastee/platform_common/pkg/db"
 )
 
 // Delete ...
 func (r *Repo) Delete(ctx context.Context, userID int64) error {
-	builderDelete := r.sq.Delete(tableDB).
-		PlaceholderFormat(squirrel.Dollar).
-		Where(squirrel.Eq{idDB: userID})
+	queryFormat := `
+	DELETE 
+	FROM 
+	    %s 
+	WHERE 
+	    %s = @%s
+	`
 
-	query, args, err := builderDelete.ToSql()
-	if err != nil {
-		return err
-	}
+	query := fmt.Sprintf(
+		queryFormat,
+		usersTable,
+		idColumn, idColumn)
 
 	q := db.Query{
 		Name:     "user_repository.Delete",
 		QueryRaw: query,
 	}
 
-	_, err = r.db.DB().ExecContext(ctx, q, args...)
+	args := pgx.NamedArgs{
+		idColumn: userID,
+	}
+
+	_, err := r.db.DB().ExecContext(ctx, q, args)
 	if err != nil {
 		return err
 	}

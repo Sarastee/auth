@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/Masterminds/squirrel"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/pkg/errors"
@@ -17,23 +16,37 @@ import (
 // Create ...
 func (r *Repo) Create(ctx context.Context, in *serviceModel.UserCreate) (int64, error) {
 	currentTime := time.Now()
-	builderInsert := r.sq.Insert(tableDB).
-		PlaceholderFormat(squirrel.Dollar).
-		Columns(nameDB, emailDB, passwordDB, roleDB, createdAtDB, updatedAtDB).
-		Values(in.Name, in.Email, in.Password, in.Role, currentTime, currentTime).
-		Suffix(fmt.Sprintf("RETURNING %s", idDB))
 
-	query, args, err := builderInsert.ToSql()
-	if err != nil {
-		return 0, err
-	}
+	queryFormat := `
+	INSERT INTO 
+	    %s (%s, %s, %s, %s, %s, %s) 
+	VALUES 
+		(@%s, @%s, @%s, @%s, @%s, @%s) 
+	RETURNING id
+	`
+
+	query := fmt.Sprintf(
+		queryFormat,
+		usersTable,
+		nameColumn, emailColumn, roleColumn, passwordColumn, createdAtColumn, updatedAtColumn,
+		nameColumn, emailColumn, roleColumn, passwordColumn, createdAtColumn, updatedAtColumn,
+	)
 
 	q := db.Query{
 		Name:     "user_repository.Create",
 		QueryRaw: query,
 	}
 
-	rows, err := r.db.DB().QueryContext(ctx, q, args...)
+	args := pgx.NamedArgs{
+		nameColumn:      in.Name,
+		emailColumn:     in.Email,
+		roleColumn:      in.Role,
+		passwordColumn:  in.Password,
+		createdAtColumn: currentTime,
+		updatedAtColumn: currentTime,
+	}
+
+	rows, err := r.db.DB().QueryContext(ctx, q, args)
 	if err != nil {
 		return 0, err
 	}

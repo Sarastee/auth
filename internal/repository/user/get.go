@@ -3,8 +3,8 @@ package user
 import (
 	"context"
 	"errors"
+	"fmt"
 
-	"github.com/Masterminds/squirrel"
 	"github.com/jackc/pgx/v5"
 	serviceModel "github.com/sarastee/auth/internal/model"
 	"github.com/sarastee/auth/internal/repository"
@@ -15,23 +15,31 @@ import (
 
 // Get ...
 func (r *Repo) Get(ctx context.Context, UserID int64) (*serviceModel.User, error) {
-	builderSelect := r.sq.Select(idDB, emailDB, nameDB, roleDB, createdAtDB, updatedAtDB).
-		From(tableDB).
-		PlaceholderFormat(squirrel.Dollar).
-		Where(squirrel.Eq{idDB: UserID}).
-		Limit(1)
+	queryFormat := `
+	SELECT
+	    %s, %s, %s, %s, %s, %s 
+	FROM 
+	    %s 
+	WHERE 
+	    %s = @%s
+	`
 
-	query, args, err := builderSelect.ToSql()
-	if err != nil {
-		return nil, err
-	}
+	query := fmt.Sprintf(
+		queryFormat,
+		idColumn, emailColumn, nameColumn, roleColumn, createdAtColumn, updatedAtColumn,
+		usersTable,
+		idColumn, idColumn)
 
 	q := db.Query{
 		Name:     "user_repository.Get",
 		QueryRaw: query,
 	}
 
-	rows, err := r.db.DB().QueryContext(ctx, q, args...)
+	args := pgx.NamedArgs{
+		idColumn: UserID,
+	}
+
+	rows, err := r.db.DB().QueryContext(ctx, q, args)
 	if err != nil {
 		return nil, err
 	}
